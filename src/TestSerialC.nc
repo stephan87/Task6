@@ -1,4 +1,5 @@
 #include "TestSerial.h"
+#include "printf.h"
 
 module TestSerialC @safe()
 {
@@ -16,6 +17,7 @@ module TestSerialC @safe()
 	    interface Receive as RadioReceive[am_id_t id];
 	    interface Packet as RadioPacket;
 	    interface AMPacket as RadioAMPacket;
+	    interface Timer<TMilli> as AnyTimer;
 	
 	    interface Leds;
   	}
@@ -40,8 +42,18 @@ implementation
     	if(TOS_NODE_ID == 0){
     		call SerialControl.start();
     	}
+    	
+    	call Leds.led1Toggle();
+    	printf("Mote %d",TOS_NODE_ID);
+    	printfflush();
+    	
+    	call AnyTimer.startPeriodic(1000);
   	}
   	
+  	event void AnyTimer.fired()
+  	{
+  		printf("Mote %d: Timer fired",TOS_NODE_ID);
+  	}
 	// event which gets fired after the radio control is initialized
   	event void RadioControl.startDone(error_t error) {
     	if (error == SUCCESS) {
