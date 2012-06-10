@@ -1,0 +1,6 @@
+#!/bin/bash
+
+make telosb threads install.0 bsl,/dev/ttyUSB0;
+make telosb threads reinstall.1 bsl,/dev/ttyUSB1;
+make telosb threads reinstall.2 bsl,/dev/ttyUSB2;
+make telosb threads reinstall.3 bsl,/dev/ttyUSB3;

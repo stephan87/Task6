@@ -10,7 +10,7 @@ typedef nx_struct TestSerialMsg {
 
 enum {
   AM_TESTSERIALMSG = 6,
-  AM_SENDPERIOD = 1000,
+  TIMEOUT = 600,
 };
 
 #endif

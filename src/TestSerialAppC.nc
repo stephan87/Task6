@@ -1,40 +1,38 @@
-#include "TestSerial.h"
-
-configuration TestSerialAppC {}
-implementation {
-  components TestSerialC as App, LedsC, MainC;
-  components SerialActiveMessageC as AMSerial;
-  components BlockingActiveMessageC;
-  components ActiveMessageC as AMRadio;
-  components new TimerMilliC() as AnyTimer;
-  components PrintfC;
-
-  App.Boot -> MainC.Boot;
-  
-  App.BlockingAMControl -> BlockingActiveMessageC;
-  App.SerialControl  -> AMSerial;
-  App.SerialSend 	 -> AMSerial;
-  App.SerialReceive  -> AMSerial.Receive;
-  App.SerialPacket 	 -> AMSerial;
-  App.SerialAMPacket -> AMSerial;
-  
-  App.RadioControl 	-> AMRadio;
-  App.RadioSend 	-> AMRadio;
-  App.RadioReceive 	-> AMRadio.Receive;
-  App.RadioPacket 	-> AMRadio;
-  App.RadioAMPacket -> AMRadio;
-  
-  App.AnyTimer	-> AnyTimer;
-  
-  App.Leds 	-> LedsC;
-
-  components new BlockingAMSenderC(220) as BlockingAMSender0;
-  components new BlockingAMReceiverC(220) as BlockingAMReceiver0;  
-  components new ThreadC(300) as RadioSendThread0;
-  components new ThreadC(300) as RadioReceiveThread0;
-  
-  App.RadioSendThread0 -> RadioSendThread0;
-  App.RadioReceiveThread0 -> RadioReceiveThread0;
-  App.BlockingAMSend0 -> BlockingAMSender0;
-  App.BlockingReceive0 -> BlockingAMReceiver0;
+configuration TestSerialAppC {
 }
+implementation {
+  components MainC, TestSerialC as App,  LedsC;
+  components BlockingActiveMessageC;
+  components BlockingSerialActiveMessageC;
+  App -> MainC.Boot;
+  App.BlockingRadioAMControl -> BlockingActiveMessageC;
+  App.BlockingSerialAMControl -> BlockingSerialActiveMessageC;
+  App.Leds -> LedsC;
+  
+  components new ThreadC(300) as RadioReceiveThread;
+  components new BlockingAMSenderC(6) as BlockingRadioAMSender0;
+  components new BlockingAMReceiverC(6) as BlockingRadioReceiver0;
+  
+  App.RadioReceiveThread -> RadioReceiveThread;
+  App.BlockingRadioAMSend0 -> BlockingRadioAMSender0;
+  App.BlockingRadioReceive0 -> BlockingRadioReceiver0;
+  App.RadioPacket0 -> BlockingActiveMessageC.Packet;
+  App.RadioAMPacket0 -> BlockingActiveMessageC.AMPacket;
+  
+  components new ThreadC(300) as SerialReceiveThread;
+  components new BlockingAMSenderC(6) as BlockingRadioAMSender1;
+  components new BlockingSerialAMSenderC(6) as BlockingSerialAMSender1;
+  components new BlockingSerialAMReceiverC(6) as BlockingSerialReceiver1;
+  App.SerialReceiveThread -> SerialReceiveThread;
+  App.BlockingRadioAMSend1 -> BlockingRadioAMSender1;
+  App.BlockingSerialAMSend1 -> BlockingSerialAMSender1;
+  App.BlockingSerialReceive1 -> BlockingSerialReceiver1;
+  App.RadioPacket1 -> BlockingActiveMessageC.Packet;
+  App.RadioAMPacket1 -> BlockingActiveMessageC.AMPacket;
+  App.SerialPacket1 -> BlockingSerialActiveMessageC.Packet;
+  App.SerialAMPacket1 -> BlockingSerialActiveMessageC.AMPacket;
+  
+  
+ 
+}
+
